@@ -86,8 +86,39 @@ def load_csv(filename,num):
                 i += 1
     return text
 
+def load_cho_csv(filename,num):
+    text = []
+    first = 0
+    i = 0
+    with open(filename,'r') as f:
+        for line in f.readlines():
+            line = line.strip('\n')
+            if first < 1:
+                first = 1
+            else:
+                if i < num:
+                    text.append([])
+                items = line.split(',')
+                text[int(items[0])-1].append('Survived_'+items[1])
+                text[int(items[0])-1].append('Pclass_'+items[2])
+                text[int(items[0])-1].append(items[5])
+                if items[6] != '':
+                    if float(items[6]) <= 10.0:
+                        text[int(items[0])-1].append('Age(0-10)')
+                    elif float(items[6]) > 10.0 and float(items[6]) <= 20.0:
+                        text[int(items[0])-1].append('Age(10-20)')
+                    elif float(items[6]) > 20.0 and float(items[6]) <= 40.0:
+                        text[int(items[0])-1].append('Age(21-40)')
+                    elif float(items[6]) > 40.0 and float(items[6]) <= 65.0:
+                        text[int(items[0])-1].append('Age(41-65)')
+                    else:
+                        text[int(items[0])-1].append('Age(66-)')
+                text[int(items[0])-1].append('Embarked_'+items[12])
+                i += 1
+    return text
+
 def outputfile(all_items):
-    with open('outputbakery.csv', 'w', newline='') as csvfile:
+    with open('outputtitanic.csv', 'w', newline='') as csvfile:
         writer = csv.writer(csvfile)
         for i in all_items:
             writer.writerow(i)
@@ -171,13 +202,14 @@ def mine_tree(inittree,items_dict,num,number):
         for key,val in itemdict.items():
             print('%s %.5f' % (set(key),val/number*100))
 
-number = 9684
-#all_items = load("IBM-Quest-Data-Generator.exe/data.ntrans_0.1.nitems_0.1.1",number)
+number = 99
+all_items = load("IBM-Quest-Data-Generator.exe/data.ntrans_0.1.nitems_0.1.1",number)
 #all_items = load("IBM-Quest-Data-Generator.exe/data.ntrans_0.1.nitems_1",99)
 #all_items = load("IBM-Quest-Data-Generator.exe/data.ntrans_1.nitems_0.1.1",984)
 #all_items = load("IBM-Quest-Data-Generator.exe/data.ntrans_1.nitems_1",977)
 #all_items = load_data()
-all_items = load_csv("transactions-from-a-bakery/BreadBasket_DMS.csv",9684)
+#all_items = load_csv("transactions-from-a-bakery/BreadBasket_DMS.csv",9684)
+#all_items = load_cho_csv("titanic/train.csv",891)
 #outputfile(all_items)
 
 items_dict = caculate_item(all_items,0.05*number)
